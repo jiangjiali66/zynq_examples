@@ -43,7 +43,7 @@ typedef struct _xil_uart{
 	int (*isopend)(xil_uart * const me);
 }xil_uart;
 
-xil_uart *xuartCreate(void);
-void xuartDestroy(xil_uart * const me);
+xil_uart *XilUartCreate(void);
+void XilUartDestroy(xil_uart * const me);
 
 #endif

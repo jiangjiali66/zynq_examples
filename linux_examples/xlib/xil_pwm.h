@@ -30,7 +30,7 @@ typedef struct _xil_pwm{
     u32 (*getPeriod)(xil_pwm* const me, u8 ch);
 }xil_pwm;
 
-xil_pwm *XilPwmCreate(u32 BaseAddress);
-void XilPwmDestory(xil_pwm *me);
+xil_pwm *XilPWMCreate(u32 BaseAddress);
+void XilPWMDestory(xil_pwm *me);
 
 #endif
