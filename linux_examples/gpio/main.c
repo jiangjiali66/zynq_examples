@@ -18,17 +18,17 @@
 
 #include "../xlib/xil_gpio.h"
 
-#define GPIO_BASE_ADDR  0x41200000
+#define GPIO_BASE_ADDR  0xe000a000
 
 int main()
 {
     xil_gpio *mygpio = XilGpioCreate(GPIO_BASE_ADDR);
     
     mygpio->modeWrite(mygpio, GPIO_CH1, 0, XIL_OUTPUT);
-    mygpio->digitalWrite(mygpio, GPIO_CH1, 0, 1);
+    mygpio->digitalWrite(mygpio, GPIO_CH1, 0, 0);
 
-    mygpio->modeWrite(mygpio, GPIO_CH2, 0, XIL_INPUT);
-    printf("gpio is %s\n", mygpio->digitalRead(mygpio, GPIO_CH2, 0)? "ON":"OFF"); 
+//    mygpio->modeWrite(mygpio, GPIO_CH2, 0, XIL_INPUT);
+//    printf("gpio is %s\n", mygpio->digitalRead(mygpio, GPIO_CH2, 0)? "ON":"OFF"); 
     
     return 0;
 }
