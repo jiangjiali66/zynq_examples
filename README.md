@@ -2,12 +2,12 @@
 实验环境：vivado2014.4</br>
 开发板系统：linaro（其他linux也可以)</br>
 </br>
-1.生成bitstream</br>
+<h2>1.生成bitstream</h2></br>
 打开vivado2014.4在命令下输入以下命令</br>
 cd ./zynq_examples</br>
 source ./system_pro.tcl</br>
 等待生成完毕</br>
-2.通过sdk生成BOOT.bin</br>
+<h2>2.通过sdk生成BOOT.bin</h2></br>
 先在vivado上导出bitstream并Launch SDK</br>
 [vivado] File->Export->Export Hardware...</br>
 打钩Include bitstream</br>
@@ -21,7 +21,7 @@ source ./system_pro.tcl</br>
 点击右下角Add按钮，添加u-boot.elf</br>
 然后点击Create Image</br>
 在工程目录下bootimage文件有BOOT.bin生成</br>
-2.linux_examples</br>
+<h2>3.linux_examples</h2></br>
 example的目录结构为</br>
 .</br>
 ├── gpio</br>
