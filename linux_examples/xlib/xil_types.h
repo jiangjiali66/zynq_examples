@@ -10,7 +10,7 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Jiang JiaJi (@.@), jiangjiali666@gmail.com
+ *         Author:  Jiang JiaJi (@.@), jialij@xilinx.com
  *        Company:  Xilinx XUP
  *
  * =====================================================================================
