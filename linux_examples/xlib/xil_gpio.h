@@ -24,6 +24,9 @@
 #define GPIO_CH1 1
 #define GPIO_CH2 2
 
+#define XIL_OUTPUT  0
+#define XIL_INPUT   1
+
 typedef struct _xil_gpio xil_gpio;
 typedef struct _xil_gpio{
     xil_io *xIO;
