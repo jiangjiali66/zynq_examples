@@ -34,7 +34,11 @@ int main()
     myconfig.databits   = 8;
     myconfig.stopbits   = 1;
     myconfig.parity     = 'N'; 
+<<<<<<< HEAD
     xil_uart* myuart = xuartCreate();
+=======
+    xil_uart* myuart = XilUartCreate();
+>>>>>>> xdma
 
     myuart->open(myuart, myconfig);
     if(!myuart->isopend(myuart))
@@ -52,7 +56,11 @@ int main()
 
     myuart->close(myuart);
     
+<<<<<<< HEAD
     xuartDestroy(myuart);
+=======
+    XilUartDestroy(myuart);
+>>>>>>> xdma
 
     return 0;
 }

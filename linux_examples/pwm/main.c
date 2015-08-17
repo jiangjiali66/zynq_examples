@@ -21,7 +21,7 @@
 
 int main()
 {
-    xil_pwm* mypwm = XilPwmCreate(PWM_BASE_ADDR);
+    xil_pwm* mypwm = XilPWMCreate(PWM_BASE_ADDR);
     mypwm->setPeriod(mypwm, 0, 10000);
     mypwm->setDuty(mypwm, 0, 20);
     
@@ -36,7 +36,7 @@ int main()
 
     printf("pwm0 Duty is %f\n", mypwm->getDuty(mypwm, 0));
     
-    XilPwmDestory(mypwm);
+    XilPWMDestory(mypwm);
     
     return 0;
 }

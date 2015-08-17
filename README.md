@@ -1,6 +1,9 @@
 # zynq_examples
 实验环境：vivado2014.4</br>
 开发板系统：linaro（其他linux也可以)</br>
+内核下载地址：https://github.com/Xilinx/linux-xlnx/tree/xilinx-v2014.4</br>
+device tree下载地址: https://github.com/Xilinx/device-tree-xlnx/tree/xilinx-v2015.1</br>
+uboot下载地址：https://github.com/Xilinx/u-boot-xlnx/tree/xilinx-v2015.1</br>
 </br>
 <h2>1.生成bitstream</h2></br>
 打开vivado2014.4在命令下输入以下命令</br>

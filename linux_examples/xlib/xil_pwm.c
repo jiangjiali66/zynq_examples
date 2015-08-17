@@ -66,7 +66,7 @@ static int XilPwmInit(xil_pwm *me, u32 BaseAddress,
     return 0;
 }    
 
-xil_pwm *XilPwmCreate(u32 BaseAddress)
+xil_pwm *XilPWMCreate(u32 BaseAddress)
 {
     xil_pwm *me = (xil_pwm *)malloc(sizeof(xil_pwm));
     if(me == NULL)
@@ -85,7 +85,7 @@ xil_pwm *XilPwmCreate(u32 BaseAddress)
     return me;
 }
 
-void XilPwmDestory(xil_pwm *me)
+void XilPWMDestory(xil_pwm *me)
 {
     if(me == NULL)
     {

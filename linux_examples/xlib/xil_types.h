@@ -28,14 +28,21 @@
 #  define FALSE     0
 #endif
 
-typedef unsigned long u32;
-typedef signed long s32;
+typedef unsigned long uint32_t;
 
-typedef unsigned short u16;
-typedef signed short s16;
+typedef unsigned short uint16_t;
 
-typedef unsigned char u8;
-typedef signed char s8;
+typedef unsigned char uint8_t;
+
+
+typedef uint32_t u32;
+typedef int32_t s32;
+
+typedef uint16_t u16;
+typedef int16_t s16;
+
+typedef uint8_t u8;
+typedef int8_t s8;
 
 typedef enum boolean { true, false } boolean;
 #endif
