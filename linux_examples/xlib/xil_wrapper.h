@@ -17,8 +17,7 @@
  */
 #ifndef _XIL_WRAPPER_H_
 #define _XIL_WRAPPER_H_
-#include "xil_types.h"
-
+#include <sys/types.h>
 ssize_t ReadOneByte(int fd, void *buf);
 
 ssize_t Readn(int fd, void *buf, ssize_t count);

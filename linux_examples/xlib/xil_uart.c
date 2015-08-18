@@ -261,11 +261,7 @@ static void xuartInit(xil_uart* const me,
 	return;	
 }
 
-<<<<<<< HEAD
-xil_uart *xuartCreate(void)
-=======
 xil_uart *XilUartCreate(void)
->>>>>>> xdma
 {
 	xil_uart *me = (xil_uart *)malloc(sizeof(xil_uart));
 	if(me != NULL)
@@ -276,11 +272,7 @@ xil_uart *XilUartCreate(void)
 	return me;
 }
 
-<<<<<<< HEAD
-void xuartDestroy(xil_uart * const me)
-=======
 void XilUartDestroy(xil_uart * const me)
->>>>>>> xdma
 {
 	if(me != NULL)
     {

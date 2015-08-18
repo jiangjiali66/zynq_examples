@@ -28,7 +28,7 @@ int main()
     mygpio->digitalWrite(mygpio, GPIO_CH1, 0, 1);
 
     mygpio->modeWrite(mygpio, GPIO_CH2, 0, XIL_INPUT);
-    //mygpio->digitalWrite(mygpio, GPIO_CH1, 0, 1);
     printf("gpio is %s\n", mygpio->digitalRead(mygpio, GPIO_CH2, 0)? "ON":"OFF"); 
+    
     return 0;
 }
