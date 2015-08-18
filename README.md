@@ -1,6 +1,7 @@
 # zynq_examples
 实验环境：vivado2014.4</br>
 开发板系统：linaro（其他linux也可以)</br>
+linaro下载地址：<code>http://pan.baidu.com/s/1dDrs4bJ</code></br>
 内核下载地址：<code>https://github.com/Xilinx/linux-xlnx/tree/xilinx-v2014.4</code></br>
 device tree下载地址: <code>https://github.com/Xilinx/device-tree-xlnx/tree/xilinx-v2015.1</code></br>
 uboot下载地址：<code>https://github.com/Xilinx/u-boot-xlnx/tree/xilinx-v2015.1</code></br>
