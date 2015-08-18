@@ -23,17 +23,25 @@
 #include "xil_types.h"
 
 typedef struct _xil_spi_config{
+    char *devname;
     u8 mode;
     u8 bits;
-    u32 speed;
+    u32 maxspeed;
+    u16 delay_usecs;
 }xil_spi_config;
 
 typedef struct _xil_spi xil_spi;
 typedef struct _xil_spi{
-    u8 (*RWOneByte)(xil_spi* const me, u8 buf);
-    int (*RWNbyte)(xil_spi* const me, void *txBuf, void *rxBuf, u32 len);
+    u8 bits;
+    u16 delay_usecs;
+    u32 speed;
+    int fd;
+    int (*setSpeed)(xil_spi* const me, u32 speed);
+    u8 (*RWOneByte)(xil_spi* const me, u8 buf, u8 csn);
+    int (*RWNbyte)(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 csn);
 }xil_spi;
 
-xil_spi *me = XilCreateSPI(xil_spi_config config)
+xil_spi *XilSPICreate(xil_spi_config config);
+void XilSPIDestroy(xil_spi*  me); 
 
 #endif
