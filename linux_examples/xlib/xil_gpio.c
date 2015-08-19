@@ -37,6 +37,93 @@
 #define XGPIO_ISR_OFFSET    0x120 /**< Interrupt status register */
 #define XGPIO_IER_OFFSET    0x128 /**< Interrupt enable register */
 
+
+#define XGPIOPS_DATA_LSW_OFFSET  0x000  /* Mask and Data Register LSW, WO */
+#define XGPIOPS_DATA_MSW_OFFSET  0x004  /* Mask and Data Register MSW, WO */
+#define XGPIOPS_DATA_OFFSET  0x040  /* Data Register, RW */
+#define XGPIOPS_DATA_RO_OFFSET   0x060  /* Data Register - Input, RO */
+#define XGPIOPS_DIRM_OFFSET  0x204  /* Direction Mode Register, RW */
+#define XGPIOPS_OUTEN_OFFSET     0x208  /* Output Enable Register, RW */
+#define XGPIOPS_INTMASK_OFFSET   0x20C  /* Interrupt Mask Register, RO */
+#define XGPIOPS_INTEN_OFFSET     0x210  /* Interrupt Enable Register, WO */
+#define XGPIOPS_INTDIS_OFFSET    0x214  /* Interrupt Disable Register, WO*/
+#define XGPIOPS_INTSTS_OFFSET    0x218  /* Interrupt Status Register, RO */
+#define XGPIOPS_INTTYPE_OFFSET   0x21C  /* Interrupt Type Register, RW */
+#define XGPIOPS_INTPOL_OFFSET    0x220  /* Interrupt Polarity Register, RW */
+#define XGPIOPS_INTANY_OFFSET    0x224  /* Interrupt On Any Register, RW */
+/* @} */
+
+/** @name Register offsets for each Bank.
+ *  *  @{
+ *   */
+#define XGPIOPS_DATA_MASK_OFFSET 0x8  /* Data/Mask Registers offset */
+#define XGPIOPS_DATA_BANK_OFFSET 0x4  /* Data Registers offset */
+#define XGPIOPS_REG_MASK_OFFSET 0x40  /* Registers offset */
+
+/* For backwards compatibility */
+#define XGPIOPS_BYPM_MASK_OFFSET    XGPIOPS_REG_MASK_OFFSET
+
+/** @name Interrupt type reset values for each bank
+ *  *  @{
+ *   */
+#define XGPIOPS_INTTYPE_BANK0_RESET  0xFFFFFFFF
+#define XGPIOPS_INTTYPE_BANK1_RESET  0x3FFFFFFF
+#define XGPIOPS_INTTYPE_BANK2_RESET  0xFFFFFFFF
+#define XGPIOPS_INTTYPE_BANK3_RESET  0xFFFFFFFF
+
+
+void ps_modeChipWrite(xil_gpio * const me, u8 ch, u32 value)
+{
+    if(ch < 0 || ch > 4)
+    {
+        printf("[file:%s__function:%s__linefile:%d]out of memory!\n", 
+                    __FILE__, __FUNCTION__, __LINE__);
+        return;
+    } 
+    me->xIO->Xil_Out32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) + 
+                            XGPIOPS_DIRM_OFFSET, ~value);
+    me->xIO->Xil_Out32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) +
+                            XGPIOPS_OUTEN_OFFSET, ~value);
+}
+
+u32 ps_modeChipRead(xil_gpio * const me, u8 ch)
+{
+    if(ch < 0 || ch > 4)
+    {
+        printf("[file:%s__function:%s__linefile:%d]out of memory!\n",
+                    __FILE__, __FUNCTION__, __LINE__);
+        return 0;
+    }
+    return ~me->xIO->Xil_In32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) +
+                XGPIOPS_DIRM_OFFSET);
+    
+}
+
+void ps_digitalChipWrite(xil_gpio * const me, u8 ch, u32 value)
+{
+    if(ch < 0 || ch > 4)
+    {
+        printf("[file:%s__function:%s__linefile:%d]out of memory!\n",
+                    __FILE__, __FUNCTION__, __LINE__);
+        return;
+    }
+    me->xIO->Xil_Out32(me->xIO, (ch * XGPIOPS_DATA_BANK_OFFSET) +
+              XGPIOPS_DATA_OFFSET, value);
+}
+
+u32 ps_digitalChipRead(xil_gpio * const me, u8 ch)
+{
+    if(ch < 0 || ch > 4)
+    {
+        printf("[file:%s__function:%s__linefile:%d]out of memory!\n",
+                    __FILE__, __FUNCTION__, __LINE__);
+        return 0;
+    }
+    return me->xIO->Xil_In32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) +
+                XGPIOPS_DATA_OFFSET);
+
+}
+
 void X_digitalChipWrite(xil_gpio * const me, u8 ch, u32 value)
 {
     if(ch < 1 || ch > 2)
@@ -185,9 +272,11 @@ xil_gpio *XilGpioCreate(u32 BaseAddress)
         return NULL;
     }
     if(XilGpioInit(me, BaseAddress, X_digitalWrite, X_modeWrite,
-                    X_digitalRead, X_modeRead, X_digitalChipWrite, 
-                    X_modeChipWrite, X_digitalChipRead, 
-                    X_modeChipRead) < 0)
+                    X_digitalRead, X_modeRead, 
+                    BaseAddress!=PS_GPIO_BASEADDR?X_digitalChipWrite:ps_digitalChipWrite, 
+                    BaseAddress!=PS_GPIO_BASEADDR?X_modeChipWrite:ps_modeChipWrite, 
+                    BaseAddress!=PS_GPIO_BASEADDR?X_digitalChipRead:ps_digitalChipRead, 
+                    BaseAddress!=PS_GPIO_BASEADDR?X_modeChipRead:ps_modeChipRead) < 0)
     {
         free(me);
         return NULL;
