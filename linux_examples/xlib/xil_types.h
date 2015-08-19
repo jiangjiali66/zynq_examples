@@ -50,4 +50,5 @@ typedef uint8_t u8;
 typedef int8_t s8;
 
 typedef enum boolean { true, false } boolean;
+
 #endif
