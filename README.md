@@ -113,4 +113,9 @@ example的目录结构为</br>
 ├── makeallclean.sh
 └── README.md
 </pre>
-lib为库文件源码，其他为具体应用源码</br>
+<h5>
+hardware_pro：硬件工程的TCL</br>
+linux_dev：例程需要加载的驱动</br>
+linux_img：编译好的fat分区镜像</br>
+linux_examples：例程文件夹，xlib为库文件源码，其他为具体demo的源码</br>
+</h5>
