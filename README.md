@@ -74,7 +74,14 @@ example的目录结构为</br>
 │   ├── gpio
 │   │   ├── main.c
 │   │   └── Makefile
+│   ├── i2c
+│   │   ├── eeprom.c
+│   │   └── Makefile
+│   ├── oled
 │   ├── pwm
+│   │   ├── main.c
+│   │   └── Makefile
+│   ├── spi
 │   │   ├── main.c
 │   │   └── Makefile
 │   ├── uart
@@ -85,10 +92,14 @@ example的目录结构为</br>
 │       ├── xil_dma.h
 │       ├── xil_gpio.c
 │       ├── xil_gpio.h
+│       ├── xil_i2c.c
+│       ├── xil_i2c.h
 │       ├── xil_io.c
 │       ├── xil_io.h
 │       ├── xil_pwm.c
 │       ├── xil_pwm.h
+│       ├── xil_spi.c
+│       ├── xil_spi.h
 │       ├── xil_types.h
 │       ├── xil_uart.c
 │       ├── xil_uart.h
@@ -99,8 +110,7 @@ example的目录结构为</br>
 │   ├── devicetree.dtb
 │   ├── u-boot.elf
 │   └── uImage
+├── makeallclean.sh
 └── README.md
-
-21 directories, 50 files
 </pre>
 lib为库文件源码，其他为具体应用源码</br>
