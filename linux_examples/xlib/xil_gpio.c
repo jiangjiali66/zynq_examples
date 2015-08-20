@@ -20,6 +20,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define PS_GPIO 0
+#define AXI_GPIO 1
+
 #define XGPIO_CHAN_OFFSET  8
 
 #define XGPIO_IR_MASK       0x3 /**< Mask of all bits */
@@ -71,7 +74,9 @@
 #define XGPIOPS_INTTYPE_BANK2_RESET  0xFFFFFFFF
 #define XGPIOPS_INTTYPE_BANK3_RESET  0xFFFFFFFF
 
-
+/**
+    当对PS的MIO进行整个bank操作的时候，mode与axi gpio相反
+ **/
 void ps_modeChipWrite(xil_gpio * const me, u8 ch, u32 value)
 {
     if(ch < 0 || ch > 4)
@@ -80,10 +85,11 @@ void ps_modeChipWrite(xil_gpio * const me, u8 ch, u32 value)
                     __FILE__, __FUNCTION__, __LINE__);
         return;
     } 
+    
     me->xIO->Xil_Out32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) + 
-                            XGPIOPS_DIRM_OFFSET, ~value);
+                            XGPIOPS_DIRM_OFFSET, value);
     me->xIO->Xil_Out32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) +
-                            XGPIOPS_OUTEN_OFFSET, ~value);
+                            XGPIOPS_OUTEN_OFFSET, value);
 }
 
 u32 ps_modeChipRead(xil_gpio * const me, u8 ch)
@@ -94,7 +100,7 @@ u32 ps_modeChipRead(xil_gpio * const me, u8 ch)
                     __FILE__, __FUNCTION__, __LINE__);
         return 0;
     }
-    return ~me->xIO->Xil_In32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) +
+    return me->xIO->Xil_In32(me->xIO, (ch * XGPIOPS_REG_MASK_OFFSET) +
                 XGPIOPS_DIRM_OFFSET);
     
 }
@@ -172,6 +178,86 @@ u32 X_modeChipRead(xil_gpio * const me, u8 ch)
                                 XGPIO_TRI_OFFSET);
 }
 
+unsigned int XGpioPsPinTable[] = {
+    31, /* 0 - 31, Bank 0 */
+    53, /* 32 - 53, Bank 1 */
+    85, /* 54 - 85, Bank 2 */
+    117 /* 86 - 117 Bank 3 */
+};
+
+void XGpioPs_GetBankPin(u8 PinNumber,   u8 *BankNumber, u8 *PinNumberInBank)
+{
+    for(*BankNumber = 0; *BankNumber < 4; (*BankNumber)++)
+        if (PinNumber <= XGpioPsPinTable[*BankNumber])
+            break;
+
+    if (*BankNumber == 0) {
+        *PinNumberInBank = PinNumber;
+    } else {
+        *PinNumberInBank = PinNumber %
+                    (XGpioPsPinTable[*BankNumber - 1] + 1);
+    }  
+}
+
+void ps_digitalWrite(xil_gpio * const me, u8 ch, u8 pin, boolean value)
+{
+    u32 RegOffset;
+    u32 data;
+    u8 Bank;
+    u8 PinNumber;
+    /*
+     * Get the Bank number and Pin number within the bank.
+     */
+    XGpioPs_GetBankPin(pin, &Bank, &PinNumber);
+
+    if (PinNumber > 15) {
+        /*
+         * There are only 16 data bits in bit maskable register.
+         */
+        PinNumber -= 16;
+        RegOffset = XGPIOPS_DATA_MSW_OFFSET;
+    } else {
+        RegOffset = XGPIOPS_DATA_LSW_OFFSET;
+    }
+    data = ~(1 << (PinNumber + 16)) & ((value << PinNumber) | 0xFFFF0000);
+    me->xIO->Xil_Out32(me->xIO, ((Bank) * XGPIOPS_DATA_MASK_OFFSET) +
+              RegOffset, data);
+}
+
+boolean ps_digitalRead(xil_gpio * const me, u8 ch, u8 pin)
+{
+    u8 Bank;
+    u8 PinNumber;
+    XGpioPs_GetBankPin(pin, &Bank, &PinNumber);
+    printf("%d %d\n", Bank, PinNumber);
+    return (me->xIO->Xil_In32(me->xIO, ((Bank) * XGPIOPS_DATA_BANK_OFFSET) +
+                 XGPIOPS_DATA_RO_OFFSET) >> PinNumber) & 1;
+}
+
+void ps_modeWrite(xil_gpio * const me, u8 ch, u8 pin, boolean value)
+{
+    u8 Bank;
+    u8 PinNumber;
+    u32 DirModeReg;
+    value = value?0:1;
+    XGpioPs_GetBankPin(pin, &Bank, &PinNumber);
+    DirModeReg = me->modeChipRead(me, Bank);
+    if (value) { /*  Output Direction */
+        DirModeReg |= (1 << PinNumber);
+    } else { /* Input Direction */
+        DirModeReg &= ~ (1 << PinNumber);
+    }
+    me->modeChipWrite(me, Bank, DirModeReg);
+}
+
+boolean ps_modeRead(xil_gpio * const me, u8 ch, u8 pin)
+{
+    u8 Bank;
+    u8 PinNumber;
+    XGpioPs_GetBankPin(pin, &Bank, &PinNumber);
+    return ((me->modeChipRead(me, Bank) >> PinNumber) & 1)?0:1;
+}
+
 void X_digitalWrite(xil_gpio * const me, u8 ch, u8 pin, boolean value)
 {
     if(pin < 0 || pin > 31)
@@ -187,7 +273,7 @@ void X_digitalWrite(xil_gpio * const me, u8 ch, u8 pin, boolean value)
     }
     else
     {
-        data = data & (0xffffffff - 1 << pin);
+        data = data & (0xffffffff - (1 << pin));
     }
     
     me->digitalChipWrite(me, ch, data);
@@ -219,7 +305,7 @@ void X_modeWrite(xil_gpio * const me, u8 ch, u8 pin, boolean value)
     }
     else
     {
-        data = data & (0xffffffff - 1 << pin);
+        data = data & (0xffffffff - (1 << pin));
     }
     me->modeChipWrite(me, ch, data);
 }
@@ -251,6 +337,7 @@ int XilGpioInit(xil_gpio* const me, u32 BaseAddress,
     {
         return -1;
     }
+
     me->digitalWrite = digitalWrite;
     me->modeWrite = modeWrite;
     me->digitalRead = digitalRead;
@@ -260,7 +347,35 @@ int XilGpioInit(xil_gpio* const me, u32 BaseAddress,
     me->digitalChipRead = digitalChipRead;
     me->modeChipRead = modeChipRead;
 
+    me->xIO->Xil_Out32(me->xIO, XGPIOPS_INTDIS_OFFSET, 0xFFFFFFFF);
+    me->xIO->Xil_Out32(me->xIO, ((1) * XGPIOPS_REG_MASK_OFFSET) +
+              XGPIOPS_INTDIS_OFFSET, 0xFFFFFFFF);
+    me->xIO->Xil_Out32(me->xIO, ((2) * XGPIOPS_REG_MASK_OFFSET) +
+              XGPIOPS_INTDIS_OFFSET, 0xFFFFFFFF);
+
+    me->xIO->Xil_Out32(me->xIO, ((3) * XGPIOPS_REG_MASK_OFFSET) +
+              XGPIOPS_INTDIS_OFFSET, 0xFFFFFFFF);
+
     return 0;
+}
+
+#define APER_CLK_CTRL  0xf800012c
+#define PS_GPIO_CLK_BIT 22
+
+void PsGpioCLKPower(int ctrl)
+{
+    xil_io *clk = XilIOCreate(APER_CLK_CTRL);
+    u32 data = clk->Xil_In32(clk, APER_CLK_CTRL & MAP_MASK);
+    if(ctrl)
+    {
+        data |= (1 << PS_GPIO_CLK_BIT);
+    }
+    else
+    {
+        data &= ~(1 << PS_GPIO_CLK_BIT);
+    }
+    clk->Xil_Out32(clk, APER_CLK_CTRL & MAP_MASK, data);
+    XilIODestory(clk);
 }
 
 xil_gpio *XilGpioCreate(u32 BaseAddress)
@@ -271,17 +386,30 @@ xil_gpio *XilGpioCreate(u32 BaseAddress)
         printf("xil gpio create fail!\n");
         return NULL;
     }
-    if(XilGpioInit(me, BaseAddress, X_digitalWrite, X_modeWrite,
-                    X_digitalRead, X_modeRead, 
-                    BaseAddress!=PS_GPIO_BASEADDR?X_digitalChipWrite:ps_digitalChipWrite, 
-                    BaseAddress!=PS_GPIO_BASEADDR?X_modeChipWrite:ps_modeChipWrite, 
-                    BaseAddress!=PS_GPIO_BASEADDR?X_digitalChipRead:ps_digitalChipRead, 
-                    BaseAddress!=PS_GPIO_BASEADDR?X_modeChipRead:ps_modeChipRead) < 0)
+    if(BaseAddress != PS_GPIO_BASEADDR)
     {
-        free(me);
-        return NULL;
+        if(XilGpioInit(me, BaseAddress, X_digitalWrite, X_modeWrite,
+                        X_digitalRead, X_modeRead, X_digitalChipWrite,
+                        X_modeChipWrite, X_digitalChipRead, X_modeChipRead) < 0)
+        {
+            free(me);
+            return NULL;
+        }
+        me->status = AXI_GPIO;
     }
-
+    else
+    {
+        PsGpioCLKPower(1);
+        if(XilGpioInit(me, BaseAddress, ps_digitalWrite, ps_modeWrite,
+                        ps_digitalRead, ps_modeRead, ps_digitalChipWrite,
+                        ps_modeChipWrite, ps_digitalChipRead, 
+                        ps_modeChipRead) < 0)
+        {
+            free(me);
+            return NULL;
+        }
+        me->status = PS_GPIO;
+    }
     return me;
     
 }
@@ -293,6 +421,10 @@ void XilGpioDestroy(xil_gpio *me)
         printf("xil gpio destory fail!\n");
 
         return;
+    }
+    if(me->status == PS_GPIO)
+    {
+        //PsGpioCLKPower(0);
     }
     XilIODestory(me->xIO);
     free(me);

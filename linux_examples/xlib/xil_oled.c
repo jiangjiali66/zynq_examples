@@ -15,10 +15,9 @@
  *
  * =====================================================================================
  */
-#include "../xlib/xil_gpio.h"
-#include "../xlib/xil_spi.h"
-
-const uint8 F6x8[][6] =
+#include "xil_oled.h"
+#include <sys/time.h>
+const u8 F6x8[][6] =
 {
 	{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },   // sp
 	{ 0x00, 0x00, 0x00, 0x2f, 0x00, 0x00 },   // !
@@ -114,12 +113,23 @@ const uint8 F6x8[][6] =
 	{ 0x14, 0x14, 0x14, 0x14, 0x14, 0x14 }    // horiz lines
 };
 
+//中文字符串原字
+const u8 F14x16_Idx[] = 
+{
+    "中文字符"
+};
+
+const u8 F14x16[]=
+{
+    0x00
+};
+
 // 128X64I液晶底层驱动[8X16]字体库
 // 设计者: powerint
 // 描  述: [8X16]西文字符的字模数据 (纵向取模,字节倒序)
 // !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 //======================================================
-const uint8 F8X16[]=
+const u8 F8X16[]=
 {
 	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,// 0
 	0x00,0x00,0x00,0xF8,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x33,0x30,0x00,0x00,0x00,//!1
@@ -206,7 +216,7 @@ const uint8 F8X16[]=
 	0x80,0x80,0x80,0x00,0x80,0x80,0x80,0x00,0x20,0x20,0x3F,0x21,0x20,0x00,0x01,0x00,//r82
 	0x00,0x00,0x80,0x80,0x80,0x80,0x80,0x00,0x00,0x33,0x24,0x24,0x24,0x24,0x19,0x00,//s83
 	0x00,0x80,0x80,0xE0,0x80,0x80,0x00,0x00,0x00,0x00,0x00,0x1F,0x20,0x20,0x00,0x00,//t84
-	0x80,0x80,0x00,0x00,0x00,0x80,0x80,0x00,0x00,0x1F,0x20,0x20,0x20,0x10,0x3F,0x20,//uint85
+	0x80,0x80,0x00,0x00,0x00,0x80,0x80,0x00,0x00,0x1F,0x20,0x20,0x20,0x10,0x3F,0x20,//u85
 	0x80,0x80,0x80,0x00,0x00,0x80,0x80,0x80,0x00,0x01,0x0E,0x30,0x08,0x06,0x01,0x00,//v86
 	0x80,0x80,0x00,0x80,0x00,0x80,0x80,0x80,0x0F,0x30,0x0C,0x03,0x0C,0x30,0x0F,0x00,//w87
 	0x00,0x80,0x80,0x00,0x80,0x80,0x80,0x00,0x00,0x20,0x31,0x2E,0x0E,0x31,0x20,0x00,//x88
@@ -223,60 +233,79 @@ const uint8 F8X16[]=
 //              	       LED底层函数
 //------------------------------------------------------
 
+
 void LEDPIN_Init(void)    //初始化引脚口，请在OLED进行修改你所对应的引脚，均为普通脚输出
 {
-  LED_SCL_Init;
-  LED_SDA_Init;
-  LED_RST_Init;
-  LED_DC_Init;
+#ifdef OLED_USE_SPI
+    oled_gpio = XilGpioCreate(PS_GPIO_BASEADDR);
+    oled_gpio->modeWrite(oled_gpio, 0, OLED_RST_PIN, XIL_OUTPUT);
+    oled_gpio->modeWrite(oled_gpio, 0, OLED_DC_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, 0, OLED_RST_PIN, 1);
+    oled_gpio->digitalWrite(oled_gpio, 0, OLED_DC_PIN, 1);
+    xil_spi_config config = {
+        .devname = OLED_SPI_DEVNAME,
+        .mode = SPI_MODE_3,
+        .bits = 8,
+        .maxspeed = 500000,
+        .delay_usecs = 0,
+    };
+    oled_SPI = XilSPICreate(config);
+#else
+    oled_gpio = XilGpioCreate(AXI_GPIO_BASEADDR);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, 1);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, 1);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, 1);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 1);
+#endif
 }
-void LED_WrDat(uint8 data)   //写数据函数
+
+void LED_WrDat(u8 data)   //写数据函数
 {
-	uint8 i = 8;
-	//LED_CS=0;
-	LED_DCH;;;
-	LED_SCLL;;;  
-	while (i--)
-	{
-		if (data & 0x80)
-		{
-			LED_SDAH;;;
-		}
-		else
-		{
-			LED_SDAL;;;
-		}
-		LED_SCLH;;; 
-		asm("nop");;;     
-		LED_SCLL;;;    
-		data <<= 1;    
-	}
-	//LED_CS=1;
+#ifdef OLED_USE_SPI
+    oled_gpio->digitalWrite(oled_gpio, 0, OLED_DC_PIN, 1);
+	oled_SPI->RWOneByte(oled_SPI, data, 0);
+#else
+    u8 i=8;
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, 1);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+    while(i--)
+    {
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, 
+                                    data & 0x80?1:0);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 1);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+        data <<= 1;
+    }
+#endif
 }
-void LED_WrCmd(uint8 cmd) //写命令函数
+void LED_WrCmd(u8 cmd) //写命令函数
 {
-	uint8 i = 8;
-	//LED_CS = 0;
-	LED_DCL;;;
-	LED_SCLL;;;
-	while (i--)
-	{
-		if (cmd & 0x80)
-		{
-			LED_SDAH;;;
-		}
-		else
-		{
-			LED_SDAL;;;
-		}
-		LED_SCLH;;;
-		asm("nop");;;           
-		LED_SCLL;;;    
-		cmd <<= 1;   
-	} 	
-	//LED_CS = 1;
+
+#ifdef OLED_USE_SPI
+    oled_gpio->digitalWrite(oled_gpio, 0, OLED_DC_PIN, 0);
+    oled_SPI->RWOneByte(oled_SPI, cmd, 0);
+#else
+    u8 i = 8;
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, 0);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+    while(i--)
+    {
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, 
+                                    cmd & 0x80?1:0);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 1);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+        cmd <<= 1;
+    }    
+#endif
 }
-void LED_Set_Pos(uint8 x, uint8 y)//设置坐标函数
+
+
+
+void LED_Set_Pos(u8 x, u8 y)//设置坐标函数
 { 
 	LED_WrCmd(0xb0+y);
 	LED_WrCmd(((x&0xf0)>>4)|0x10);
@@ -306,9 +335,9 @@ void LED_Set_Pos(uint8 x, uint8 y)//设置坐标函数
 //		.			.
 //		0			0
 //------------------------------------------------------
-void LED_Fill(uint8 bmp_data)
+void LED_Fill(u8 bmp_data)
 {
-	uint8 y,x;
+	u8 y,x;
 	
 	for(y=0;y<8;y++)
 	{
@@ -324,7 +353,7 @@ void LED_Fill(uint8 bmp_data)
 
 void LED_CLS(void) //清屏函数
 {
-	uint8 y,x;	
+	u8 y,x;	
 	for(y=0;y<8;y++)
 	{
 		LED_WrCmd(0xb0+y);
@@ -480,17 +509,33 @@ void Set_NOP(void)
 	LED_WrCmd(0xE3);			// Command for No Operation
 }
 
+void LED_Uninit(void)
+{
+    XilGpioDestroy(oled_gpio);
+#ifdef OLED_USE_SPI
+    XilSPIDestroy(oled_SPI);
+#endif
+    
+}
+
 void LED_Init(void)        
 {
 
-  LEDPIN_Init();		
-	LED_RSTL;;;
-  usleep(5000);
-	LED_RSTH;;;
-
+    LEDPIN_Init();		
+#ifdef OLED_USE_SPI    
+    oled_gpio->digitalWrite(oled_gpio, 0, OLED_RST_PIN, 0);
+#else
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, 0);
+#endif
+    usleep(50000);
+#ifdef OLED_USE_SPI    
+    oled_gpio->digitalWrite(oled_gpio, 0, OLED_RST_PIN, 1);
+#else
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, 1);
+#endif
 	Set_Display_On_Off(0x00);		  // Display Off (0x00/0x01)
 	Set_Display_Clock(0x80);		  // Set Clock as 100 Frames/Sec
-	Set_Multiplex_Ratio(0x3F);	  // 1/64 Duty (0x0F~0x3F)
+    Set_Multiplex_Ratio(0x3F);	  // 1/64 Duty (0x0F~0x3F)
 	Set_Display_Offset(0x00);		  // Shift Mapping RAM Counter (0x00~0x3F)
 	SetStartLine(0x00);			  // Set Mapping RAM Display Start Line (0x00~0x3F)
 	Set_Charge_Pump(0x04);		  // Enable Embedded DC/DC Converter (0x00/0x04)
@@ -505,18 +550,18 @@ void LED_Init(void)
 	Set_Inverse_Display(0x00);	  // Disable Inverse Display On (0x00/0x01)  
 	Set_Display_On_Off(0x01);		  // Display On (0x00/0x01)
 	LED_Fill(0x00);                               //初始清屏
-	LED_Set_Pos(0,0); 	
+	LED_Set_Pos(0,0); 
 } 
  
 //==============================================================
-//函数名：void LED_P6x8Char(uint8 x,uint8 y,uint8 ch);
+//函数名：void LED_P6x8Char(u8 x,u8 y,u8 ch);
 //功能描述：显示一个6x8标准ASCII字符
 //参数：x为显示的横坐标0~122，y为页范围0～7，ch要显示的字符
 //返回：无
 //============================================================== 
-void LED_P6x8Char(uint8 x,uint8 y,uint8 ch)
+void LED_P6x8Char(u8 x,u8 y,u8 ch)
 {
-	 uint8 c=0,i=0;
+	 u8 c=0,i=0;
         //   j=0;     
 	   
 	c =ch-32;
@@ -533,14 +578,14 @@ void LED_P6x8Char(uint8 x,uint8 y,uint8 ch)
 }
 
 //==============================================================
-//函数名：LED_P6x8Str(uint8 x,uint8 y,uint8 *p)
+//函数名：LED_P6x8Str(u8 x,u8 y,u8 *p)
 //功能描述：写入一组6x8标准ASCII字符串
 //参数：x为显示的横坐标0~122，y为页范围0～7，要显示的字符串
 //返回：无
 //==============================================================  
-void LED_P6x8Str(uint8 x,uint8 y,uint8 ch[])
+void LED_P6x8Str(u8 x,u8 y,u8 ch[])
 {
-	uint8 c=0,i=0,j=0;      
+	u8 c=0,i=0,j=0;      
 	while (ch[j]!='\0')
 	{    
 		c =ch[j]-32;
@@ -559,14 +604,14 @@ void LED_P6x8Str(uint8 x,uint8 y,uint8 ch[])
 	}
 }
 //==============================================================
-//函数名：LED_P8x16Str(uint8 x,uint8 y,uint8 *p)
+//函数名：LED_P8x16Str(u8 x,u8 y,u8 *p)
 //功能描述：写入一组8x16标准ASCII字符串
 //参数：x为显示的横坐标0~120，y为页范围0～3，要显示的字符串
 //返回：无
 //==============================================================  
-void LED_P8x16Str(uint8 x,uint8 y,uint8 ch[])
+void LED_P8x16Str(u8 x,u8 y,u8 ch[])
 {
-	uint8 c=0,i=0,j=0;
+	u8 c=0,i=0,j=0;
 	while (ch[j]!='\0')
 	{    
 		c =ch[j]-32;
@@ -590,15 +635,15 @@ void LED_P8x16Str(uint8 x,uint8 y,uint8 ch[])
 	}
 }
 //==============================================================
-//函数名：LED_P14x16Str(uint8 x,uint8 y,uint8 *p)
+//函数名：LED_P14x16Str(u8 x,u8 y,u8 *p)
 //功能描述：写入一组14x16的中文字符串（字符串表格中需含有此字）
 //参数：x为显示的横坐标0~114，y为页范围0～3，要显示的中文字符串
 //返回：无
 //==============================================================  
-void LED_P14x16Str(uint8 x,uint8 y,uint8 ch[])
+void LED_P14x16Str(u8 x,u8 y,u8 ch[])
 {
-	uint8 wm=0,ii = 0;
-	uint32 adder=1; 
+	u8 wm=0,ii = 0;
+	u32 adder=1; 
 	
 	while(ch[ii] != '\0')
 	{
@@ -656,15 +701,15 @@ void LED_P14x16Str(uint8 x,uint8 y,uint8 ch[])
 	}
 }
 //==============================================================
-//函数名：LED_PXx16MixStr(uint8 x,uint8 y,uint8 *p)
+//函数名：LED_PXx16MixStr(u8 x,u8 y,u8 *p)
 //功能描述：输出14x16汉字和字符混合字符串 （字符串表格中需含有此字）?
 //参数：x为显示的横坐标0~114，y为页范围0～3，要显示的中文字符串
 //返回：无
 //==============================================================  
-void LED_PXx16MixStr(uint8 x, uint8 y, uint8 ch[])
+void LED_PXx16MixStr(u8 x, u8 y, u8 ch[])
 {
-	uint8 ch2[3];
-	uint8 ii=0;        
+	u8 ch2[3];
+	u8 ii=0;        
 	while(ch[ii] != '\0')
 	{
 		if(ch[ii] > 127)
@@ -688,17 +733,17 @@ void LED_PXx16MixStr(uint8 x, uint8 y, uint8 ch[])
 } 
 
 //==============================================================
-//函数名：  void LED_PrintBMP(uint8 x0,uint8 y0,uint8 x1,uint8 y1,uint8 bmp[]); 
+//函数名：  void LED_PrintBMP(u8 x0,u8 y0,u8 x1,u8 y1,u8 bmp[]); 
 //功能描述：显示BMP图片  大小为(x1-x0+1) × ((y1-y0+1)*8)
 //		       BMP图片先取页码y为0以8位(低位在上)为单位取满(x1-x0+1)列
 //		      再取页码y为1以8位(低位在上)为单位取满(x1-x0+1)列以此类推
 //参数：x的范围为0～127，y为页的范围0～7
 //返回：无
 //==============================================================
-void LED_PrintBMP(uint8 x0,uint8 y0,uint8 x1,uint8 y1,uint8 bmp[])
+void LED_PrintBMP(u8 x0,u8 y0,u8 x1,u8 y1,u8 bmp[])
 { 	
-	uint32 ii=0;
-	uint8 x,y;
+	u32 ii=0;
+	u8 x,y;
 	for(y=y0;y<=y1;y++)
 	{
 		LED_Set_Pos(x0,y);				
@@ -714,9 +759,9 @@ void LED_PrintBMP(uint8 x0,uint8 y0,uint8 x1,uint8 y1,uint8 bmp[])
 //参数：x的范围为0～122，y为页的范围0～7，data为需要转化显示的数值
 //返回：无
 //==============================================================
-void LED_PrintValueC(uint8 x, uint8 y, char data)
+void LED_PrintValueC(u8 x, u8 y, char data)
 {
-	uint8 i,j,k;
+	u8 i,j,k;
 	if(data < 0)
 	{
 		LED_P6x8Char(x,y,'-');
@@ -740,9 +785,9 @@ void LED_PrintValueC(uint8 x, uint8 y, char data)
 //参数：x的范围为0～120，y为页的范围0～7，data为需要转化显示的数值
 //返回：无
 //==============================================================
-void LED_PrintValueI(uint8 x, uint8 y, int data)
+void LED_PrintValueI(u8 x, u8 y, int data)
 {
-	uint8 i,j,k,l,m;  
+	u8 i,j,k,l,m;  
 	if(data < 0)
 	{
 		LED_P6x8Char(x,y,'-');
@@ -765,9 +810,9 @@ void LED_PrintValueI(uint8 x, uint8 y, int data)
 	LED_P6x8Char(x+30,y,k+48);		
 }
 
- void LED_PrintValueFP(uint8 x, uint8 y, uint32 data, uint8 num)
+ void LED_PrintValueFP(u8 x, u8 y, u32 data, u8 num)
  {
- 	uint8 m,i,j,k;  	
+ 	u8 m,i,j,k;  	
  	LED_P6x8Char(x, y, '.');
 	m= data/1000;
 	i = (data%1000)/100;
@@ -798,11 +843,11 @@ void LED_PrintValueI(uint8 x, uint8 y, int data)
 //参数：x的范围为0～62，y为页的范围0～7，data为需要转化显示的数值整数部分最多位5位  num表示保留的小数位0~4
 //返回：无
 //==============================================================
- void LED_PrintValueF(uint8 x, uint8 y, float data, uint8 num)
+ void LED_PrintValueF(u8 x, u8 y, float data, u8 num)
  {
- 	uint8 l,m,i,j,k;  //万千百十个
- 	uint8 databiti = 6; //整数位数
- 	uint32 tempdataui = 0;
+ 	u8 l,m,i,j,k;  //万千百十个
+ 	u8 databiti = 6; //整数位数
+ 	u32 tempdataui = 0;
   	int tempdataii = (int)data; //整数部分
  	long int tempdatalp = (long int)((data - (int)data)*10000); //取小数位后4位
  	
@@ -862,7 +907,7 @@ void LED_PrintValueI(uint8 x, uint8 y, int data)
         
  }
 
- void LED_Cursor(uint8 cursor_column, uint8 cursor_row)
+ void LED_Cursor(u8 cursor_column, u8 cursor_row)
  {	
  	if(cursor_row != 0) //光标出现
  	{

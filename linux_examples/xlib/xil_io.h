@@ -28,6 +28,9 @@
 #include <termios.h>
 #include <errno.h>
 
+#define BLOCK_SIZE (4 * 1024)
+#define MAP_MASK (BLOCK_SIZE - 1)
+
 typedef struct _xil_io xil_io;
 
 typedef struct _xil_io{

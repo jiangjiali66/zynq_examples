@@ -28,7 +28,7 @@ int main()
         .devname = DEVNAME,
         .mode = SPI_MODE_0,
         .bits = 8,
-        .maxspeed = 500000,
+        .maxspeed = 5000,
     };
     xil_spi *myspi = XilSPICreate(config);
     uint8_t tx[] = {

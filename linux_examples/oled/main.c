@@ -16,4 +16,12 @@
  * =====================================================================================
  */
 
+#include "../xlib/xil_oled.h"
 
+int main()
+{
+    LED_Init();
+    LED_P6x8Str(1, 1, "hello world!");
+    LED_Uninit();
+    return 0;
+}

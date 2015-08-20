@@ -29,12 +29,10 @@
 
 #define PS_GPIO_BASEADDR 0xE000A000
 
-typedef enum _PS_GPIO_BANK{
-    BANK0=0, BANK1, BANK2, BANK3
-}PS_GPIO_BANK;
 
 typedef struct _xil_gpio xil_gpio;
 typedef struct _xil_gpio{
+    int status;
     xil_io *xIO;
     void (*digitalWrite)(xil_gpio * const me, u8 ch, u8 pin, boolean value);
     void (*modeWrite)(xil_gpio * const me, u8 ch, u8 pin, boolean value);

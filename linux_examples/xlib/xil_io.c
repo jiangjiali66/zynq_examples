@@ -18,8 +18,6 @@
 
 #include "xil_io.h"
 #include <sys/mman.h>
-#define BLOCK_SIZE (64 * 1024)
-
 static u8 X_In8(xil_io *me, u32 RegOffset)
 {
     return  *(volatile u8 *)(me->io + RegOffset / sizeof(unsigned long)); 
@@ -59,7 +57,7 @@ static int XilAddrMmap(xil_io *me, u32 Addr)
         return -1;
     }
     me->io = (unsigned long *)mmap(0, BLOCK_SIZE, PROT_READ|PROT_WRITE,
-                                        MAP_SHARED, fd, Addr);
+                                        MAP_SHARED, fd, Addr & ~MAP_MASK);
     if ((unsigned long)me->io == -1)
     {
         printf("mmap failed!\n");
