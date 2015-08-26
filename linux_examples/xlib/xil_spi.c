@@ -54,7 +54,7 @@ static u8 XilRWOneByte(xil_spi* const me, u8 buf, u8 cs_change)
 
 }
 
-static int XilRWNbyte(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 csn)
+static int XilRWNbyte(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 cs_change)
 {
     int ret;
     struct spi_ioc_transfer tr = {
@@ -64,7 +64,7 @@ static int XilRWNbyte(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 csn)
         .delay_usecs = me->delay_usecs,
         .speed_hz = me->speed,
         .bits_per_word = me->bits,
-        .cs_change = csn,
+        .cs_change = cs_change,
     };
     ret = ioctl(me->fd, SPI_IOC_MESSAGE(1), &tr);
     if (ret == 1)
@@ -76,8 +76,8 @@ static int XilRWNbyte(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 csn)
 }
 
 static int XilInit(xil_spi *me, xil_spi_config config, int (*setSpeed)(xil_spi* const me, u32 speed),
-                u8 (*RWOneByte)(xil_spi* const me, u8 buf, u8 csn),
-                int (*RWNbyte)(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 csn))
+                u8 (*RWOneByte)(xil_spi* const me, u8 buf, u8 cs_change),
+                int (*RWNbyte)(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 cs_change))
 {
     memset(me, 0, sizeof(xil_spi));
     me->fd = open(config.devname, O_RDWR);

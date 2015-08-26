@@ -37,7 +37,7 @@ typedef struct _xil_spi{
     u32 speed;
     int fd;
     int (*setSpeed)(xil_spi* const me, u32 speed);
-    u8 (*RWOneByte)(xil_spi* const me, u8 buf, u8 csn);
+    u8 (*RWOneByte)(xil_spi* const me, u8 buf, u8 cs_change);
     int (*RWNbyte)(xil_spi* const me, u8 *txBuf, u8 *rxBuf, u32 len, u8 cs_change);
 }xil_spi;
 
