@@ -7,7 +7,7 @@ LIB=
 CC=gcc
 CC_FLAG=-Wall 
 
-PRG=main
+PRG=gpio
 OBJ=main.o ../xlib/xil_io.o ../xlib/xil_gpio.o
 
 $(PRG):$(OBJ)

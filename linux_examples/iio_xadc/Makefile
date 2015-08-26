@@ -1,14 +1,14 @@
 ###########################################
 #Makefile for simple programs
 ###########################################
-INC= -I../xlib/
+INC=
 LIB= 
 
 CC=gcc
 CC_FLAG=-Wall 
 
-PRG=axi-dma
-OBJ=main.o  ../xlib/xil_dma.o
+PRG=iio_xadc
+OBJ=main.o 
 
 $(PRG):$(OBJ)
 	$(CC)  -o $@ $(OBJ) $(INC) $(LIB)

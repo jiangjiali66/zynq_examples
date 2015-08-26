@@ -375,6 +375,14 @@ void PsGpioCLKPower(int ctrl)
         data &= ~(1 << PS_GPIO_CLK_BIT);
     }
     clk->Xil_Out32(clk, APER_CLK_CTRL & MAP_MASK, data);
+    if(ctrl)
+    {
+        while(!(clk->Xil_In32(clk, APER_CLK_CTRL & MAP_MASK) & 
+                    (1 << PS_GPIO_CLK_BIT)))
+        {
+            clk->Xil_Out32(clk, APER_CLK_CTRL & MAP_MASK, data);
+        }
+    }
     XilIODestory(clk);
 }
 

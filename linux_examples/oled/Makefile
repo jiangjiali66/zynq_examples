@@ -7,7 +7,7 @@ LIB=
 CC=gcc
 CC_FLAG=-Wall 
 
-PRG=main
+PRG=oled
 OBJ=main.o ../xlib/xil_oled.o  ../xlib/xil_wrapper.o ../xlib/xil_spi.o ../xlib/xil_gpio.o ../xlib/xil_io.o
 
 $(PRG):$(OBJ)

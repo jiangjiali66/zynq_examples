@@ -250,6 +250,9 @@ void LEDPIN_Init(void)    //初始化引脚口，请在OLED进行修改你所对
         .delay_usecs = 0,
     };
     oled_SPI = XilSPICreate(config);
+    oled_SPI->RWOneByte(oled_SPI, 0xff, 0);
+    XilSPIDestroy(oled_SPI);
+    oled_SPI = XilSPICreate(config);
 #else
     oled_gpio = XilGpioCreate(AXI_GPIO_BASEADDR);
     oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, XIL_OUTPUT);
@@ -527,7 +530,7 @@ void LED_Init(void)
 #else
     oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, 0);
 #endif
-    usleep(50000);
+    usleep(80000);
 #ifdef OLED_USE_SPI    
     oled_gpio->digitalWrite(oled_gpio, 0, OLED_RST_PIN, 1);
 #else

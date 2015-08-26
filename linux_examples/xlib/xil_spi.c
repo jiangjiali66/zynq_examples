@@ -30,7 +30,7 @@ static int XilsetSpeed(xil_spi* const me, u32 speed)
     return 0;
 }
 
-static u8 XilRWOneByte(xil_spi* const me, u8 buf, u8 csn)
+static u8 XilRWOneByte(xil_spi* const me, u8 buf, u8 cs_change)
 {
     int ret;
     u8 rxbuf;
@@ -41,7 +41,7 @@ static u8 XilRWOneByte(xil_spi* const me, u8 buf, u8 csn)
         .delay_usecs = me->delay_usecs,
         .speed_hz = me->speed,
         .bits_per_word = me->bits,
-        .cs_change = csn,
+        .cs_change = cs_change,
     };
     ret = ioctl(me->fd, SPI_IOC_MESSAGE(1), &tr);
     if (ret <= 0)  

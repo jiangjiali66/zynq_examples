@@ -19,18 +19,21 @@
 #include "../xlib/xil_dma.h"
 #include<sys/time.h>
 #define DEVICE_NAME "/dev/xdma"
-#define DMA_CH 1
+#define DMA_CH 0
 
 int main()
 {
-    const int LENGTH = 1024 * 1024;
+    const int LENGTH = 4 * 1024;
     int i;
     uint32_t *src;
     uint32_t *dst;
     printf("max image is %d for nom!\n", LENGTH);
     printf("DMA Channel is %d\n", DMA_CH);
     xil_dma *mydma = XilDMACreate(DEVICE_NAME);
-
+    if(mydma == NULL)
+    {
+        return -1;
+    }   
 /***************************dma load data**********************************/    
     src = (uint32_t *)mydma->setupAlloc(mydma, LENGTH, sizeof(uint32_t));
     dst = (uint32_t *)mydma->setupAlloc(mydma, LENGTH, sizeof(uint32_t));
@@ -39,12 +42,12 @@ int main()
     {
         src[i] = 'z';
     }
-    src[LENGTH-1] = '\n';
+//    src[LENGTH-1] = '\n';
     for (i = 0; i < LENGTH; i++) 
     {
         dst[i] = 'd';
     }
-    dst[LENGTH-1] = '\n';
+//    dst[LENGTH-1] = '\n';
     printf("test: dst buffer before transmit:\n");
     for (i = 0; i < 10; i++) 
     {
@@ -68,13 +71,13 @@ int main()
     while(dst[LENGTH - 2] != src[LENGTH - 2]);
     gettimeofday(&tv,&tz);
     long now = tv.tv_sec * 1000000 + tv.tv_usec - start - 72; 
-    printf("running time is %ld us\n", now);
     int count;
     for (i = 0; i < LENGTH; i++)
     {
-        if((char)dst[i] != 'z')
+        if((char)dst[i] != (char)src[i])
         {
             count = i;
+            printf("\n count is %d\n", count);
             break;
         }
 
@@ -83,8 +86,8 @@ int main()
             printf("%c\t", (char)dst[i]);
         }
     }
-    printf("\n count is %d\n", count);
-
+    printf("\n");
+    printf("running time is %ld us\n", now);
     XilDMADestory(mydma);
 
     return 0;

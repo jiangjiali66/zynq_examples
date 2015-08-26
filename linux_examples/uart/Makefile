@@ -7,7 +7,7 @@ LIB=
 CC=gcc
 CC_FLAG=-Wall 
 
-PRG=main
+PRG=uart
 OBJ=main.o ../xlib/xil_wrapper.o ../xlib/xil_uart.o
 
 $(PRG):$(OBJ)

@@ -72,7 +72,7 @@ static int Xil_getDevNum(xil_dma* const me)
 {
     int num_devices = 0;
     if (ioctl(me->fd, XDMA_GET_NUM_DEVICES, &num_devices) < 0) {
-        printf("Error ioctl getting device num");
+        printf("Error ioctl getting device num\n");
         return -1;
     }
     return num_devices;
@@ -94,7 +94,7 @@ static int Xil_DMA_Prep_Buf_Ctl(xil_dma* const me, int device_id, uint32_t * ptr
     int ret = (int)ioctl(me->fd, XDMA_PREP_BUF, &buf);
     if(ret < 0) 
     {
-        printf("Error ioctl set %s buf", dir==XDMA_MEM_TO_DEV?"tx":"rx");
+        printf("Error ioctl set %s buf\n", dir==XDMA_MEM_TO_DEV?"tx":"rx");
         return ret;
     }
 
@@ -115,7 +115,7 @@ static int Xil_DMA_Start_Transfer_Ctl(xil_dma* const me, int device_id,
     int ret = (int)ioctl(me->fd, XDMA_START_TRANSFER, &trans);
     if (ret < 0) 
     {
-        printf("Error ioctl start %s trans", dir==XDMA_MEM_TO_DEV?"tx":"rx");
+        printf("Error ioctl start %s trans\n", dir==XDMA_MEM_TO_DEV?"tx":"rx");
         return ret;
     }
     
@@ -166,7 +166,7 @@ static int Xil_stopTransfer(xil_dma* const me, int device_id,
     }
             
     if (device_id >= me->num_of_devices) {
-        printf("Error invalid device ID");
+        printf("Error invalid device ID\n");
         return -1;
     }
     
@@ -175,7 +175,7 @@ static int Xil_stopTransfer(xil_dma* const me, int device_id,
     ret = (int)ioctl(me->fd, XDMA_STOP_TRANSFER, &(trans.chan));
     if (ret < 0) 
     {
-        printf("Error ioctl stop %s trans", dir==XDMA_MEM_TO_DEV?"src":"dst");
+        printf("Error ioctl stop %s trans\n", dir==XDMA_MEM_TO_DEV?"src":"dst");
         return ret;
     }
     
@@ -201,7 +201,7 @@ static int xil_DMAInit(xil_dma* const me, char *dma_device,
     me->fd = open(dma_device, O_RDWR | O_CREAT | O_TRUNC, (mode_t) 0600);
     if(me->fd == -1) 
     {
-        printf("Error opening file for writing");
+        printf("Error opening file for writing\n");
         return EXIT_FAILURE;
     }
 
@@ -209,7 +209,7 @@ static int xil_DMAInit(xil_dma* const me, char *dma_device,
     if(me->map == MAP_FAILED)
     {
         close(me->fd);
-        printf("Error mmapping the file");
+        printf("Error mmapping the file\n");
         return EXIT_FAILURE;
     }    
     me->getDevNum = getDevNum;
@@ -223,7 +223,7 @@ static int xil_DMAInit(xil_dma* const me, char *dma_device,
     me->num_of_devices = me->getDevNum(me);
     if(me->num_of_devices <= 0) 
     {
-        printf("Error no DMA devices found");
+        printf("Error no DMA devices found\n");
         return EXIT_FAILURE;
     }
     
@@ -239,7 +239,7 @@ static int xil_DMAInit(xil_dma* const me, char *dma_device,
         {
             if(ioctl(me->fd, XDMA_GET_DEV_INFO, &me->xdma_devices[i]) < 0) 
             {
-                printf("Error ioctl getting device info");
+                printf("Error ioctl getting device info\n");
                 return EXIT_FAILURE;
             }
 
@@ -250,7 +250,7 @@ static int xil_DMAInit(xil_dma* const me, char *dma_device,
             dst_config.reset = 0;
             if(ioctl(me->fd, XDMA_DEVICE_CONTROL, &dst_config) < 0) 
             {
-                printf("Error ioctl config dst (rx) chan");
+                printf("Error ioctl config dst (rx) chan\n");
                 return EXIT_FAILURE;
             }
 
@@ -261,7 +261,7 @@ static int xil_DMAInit(xil_dma* const me, char *dma_device,
             src_config.reset = 0;
             if(ioctl(me->fd, XDMA_DEVICE_CONTROL, &src_config) < 0) 
             {
-                printf("Error ioctl config src (tx) chan");
+                printf("Error ioctl config src (tx) chan\n");
                 return EXIT_FAILURE;
             }
         }
@@ -279,8 +279,12 @@ xil_dma *XilDMACreate(char *dma_device)
         printf("Error DMA Create Failure!\n");
         return NULL;
     }
-    xil_DMAInit(me, dma_device, Xil_getDevNum, Xil_performTransfer,
-                    Xil_stopTransfer, setupAlloc, resetAlloc);
+    if(xil_DMAInit(me, dma_device, Xil_getDevNum, Xil_performTransfer,
+                    Xil_stopTransfer, setupAlloc, resetAlloc) != 0)
+    {
+        free(me);
+        return NULL;
+    }
     
     return me;
 }
@@ -293,7 +297,7 @@ void XilDMADestory(xil_dma *me)
     }
     if(munmap(me->map, FILESIZE) == -1) 
     {
-        printf("Error un-mmapping the file");
+        printf("Error un-mmapping the file\n");
         return;
     }
     close(me->fd);
