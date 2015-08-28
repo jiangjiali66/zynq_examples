@@ -32,6 +32,13 @@ enum xdma_direction {
     XDMA_TRANS_NONE,
 };
 
+enum xdma_wait {
+    XDMA_WAIT_NONE = 0,
+    XDMA_WAIT_SRC = (1 << 0),
+    XDMA_WAIT_DST = (1 << 1),
+    XDMA_WAIT_BOTH = (1 << 1) | (1 << 0),
+};
+
 typedef struct _xdma_dev {
     u32 tx_chan;    /* (struct dma_chan *) */
     u32 tx_cmp; /* (struct completion *) callback_param */
@@ -77,7 +84,7 @@ typedef struct _xil_dma {
     xdma_dev xdma_devices[MAX_DEVICES];
     int (*getDevNum)(xil_dma* const me);
     int (*performTransfer)(xil_dma* const me, int device_id, 
-                            boolean wait_flag,
+                            enum xdma_wait wait,
                             uint32_t * ptr, uint32_t length,
                             enum xdma_direction dir);
     int (*stopTransfer)(xil_dma* const me, int device_id,  

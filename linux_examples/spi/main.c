@@ -16,7 +16,7 @@
  * =====================================================================================
  */
 
-#include "../xlib/xil_spi.h"
+#include "xil_spi.h"
 #include <stdio.h>
 
 #define DEVNAME "/dev/spidev32766.0"

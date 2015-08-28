@@ -16,14 +16,14 @@
  * =====================================================================================
  */
 #include <stdio.h>
-#include "../xlib/xil_dma.h"
+#include "xil_dma.h"
 #include<sys/time.h>
 #define DEVICE_NAME "/dev/xdma"
 #define DMA_CH 0
 
 int main()
 {
-    const int LENGTH = 4 * 1024;
+    const int LENGTH = 1024 * 1024;
     int i;
     uint32_t *src;
     uint32_t *dst;
@@ -63,9 +63,9 @@ int main()
     
     if (0 < mydma->getDevNum(mydma)) 
     {
-        mydma->performTransfer(mydma, DMA_CH, XDMA_WAIT_NONE, src, 
+        mydma->performTransfer(mydma, DMA_CH, 0, src, 
                                         LENGTH, XDMA_MEM_TO_DEV);
-        mydma->performTransfer(mydma, DMA_CH, XDMA_WAIT_NONE, dst, 
+        mydma->performTransfer(mydma, DMA_CH, 0, dst, 
                                         LENGTH, XDMA_DEV_TO_MEM);
     }
     while(dst[LENGTH - 2] != src[LENGTH - 2]);
@@ -88,6 +88,7 @@ int main()
     }
     printf("\n");
     printf("running time is %ld us\n", now);
+   
     XilDMADestory(mydma);
 
     return 0;

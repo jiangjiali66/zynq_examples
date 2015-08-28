@@ -17,7 +17,7 @@
  */
 
 
-#include "../xlib/xil_gpio.h"
+#include "xil_gpio.h"
 
 #define GPIO_BASE_ADDR  0x41200000
 #define LD0 0

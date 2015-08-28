@@ -15,8 +15,8 @@
  *
  * =====================================================================================
  */
-#include "../xlib/xil_types.h"
-#include "../xlib/xil_i2c.h"
+#include "xil_types.h"
+#include "xil_i2c.h"
 #include <stdio.h>
 #include <string.h>
 

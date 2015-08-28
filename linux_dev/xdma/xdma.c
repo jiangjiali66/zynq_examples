@@ -169,7 +169,7 @@ static int xdma_prep_buffer(struct xdma_buf_info *buf_info)
 
 	chan = (struct dma_chan *)buf_info->chan;
 	cmp = (struct completion *)buf_info->completion;
-	buf = xdma_handle + buf_info->buf_offset;
+    buf = xdma_handle + buf_info->buf_offset;
 	len = buf_info->buf_size;
 	dir = xdma_to_dma_direction(buf_info->dir);
 
@@ -213,7 +213,6 @@ static int xdma_start_transfer(struct xdma_transfer *trans)
 	chan = (struct dma_chan *)trans->chan;
 	cmp = (struct completion *)trans->completion;
 	cookie = trans->cookie;
-
 	init_completion(cmp);
 	dma_async_issue_pending(chan);
 

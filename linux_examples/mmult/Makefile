@@ -7,8 +7,8 @@ LIB=
 CC=gcc
 CC_FLAG=-Wall 
 
-PRG=iio_xadc
-OBJ=main.o 
+PRG=mmult
+OBJ=main.o xil_mmult.o ../xlib/xil_io.o ../xlib/xil_dma.o
 
 $(PRG):$(OBJ)
 	$(CC)  -o $@ $(OBJ) $(INC) $(LIB)

@@ -126,7 +126,7 @@ static int Xil_performTransfer(xil_dma* const me, int device_id, boolean wait_fl
                         uint32_t * ptr, uint32_t length, enum xdma_direction dir)
 {
     int ret = 0;
-    dma_cookie_t xdma_cookie = 0;
+    dma_cookie_t xdma_cookie = 0
     boolean used = ((ptr != NULL) && (length != 0));
     if(!used)
     {

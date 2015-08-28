@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "../xlib/xil_uart.h"
+#include "xil_uart.h"
 
 #define UART_READ_BYTES_NUM 10
 char str[] = "hello world\r\n";

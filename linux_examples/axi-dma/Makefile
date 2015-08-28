@@ -1,7 +1,7 @@
 ###########################################
 #Makefile for simple programs
 ###########################################
-INC= -I../xlib/
+CFLAGS += -I../xlib/
 LIB= 
 
 CC=gcc

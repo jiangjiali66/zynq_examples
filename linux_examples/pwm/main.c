@@ -16,7 +16,7 @@
  * =====================================================================================
  */
 
-#include "../xlib/xil_pwm.h"
+#include "xil_pwm.h"
 #define PWM_BASE_ADDR 0x43C00000
 
 int main()

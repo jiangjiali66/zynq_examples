@@ -1,14 +1,14 @@
 ###########################################
 #Makefile for simple programs
 ###########################################
-INC= -I../xlib/
+CFLAGS += -I../xlib/
 LIB= 
 
 CC=gcc
 CC_FLAG=-Wall 
 
 PRG=oled
-OBJ=main.o ../xlib/xil_oled.o  ../xlib/xil_wrapper.o ../xlib/xil_spi.o ../xlib/xil_gpio.o ../xlib/xil_io.o
+OBJ=main.o xil_oled.o  ../xlib/xil_wrapper.o ../xlib/xil_spi.o ../xlib/xil_gpio.o ../xlib/xil_io.o
 
 $(PRG):$(OBJ)
 	$(CC)  -o $@ $(OBJ) $(INC) $(LIB)
