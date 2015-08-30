@@ -34,7 +34,7 @@
 *******************************************/
 xil_gpio *oled_gpio;
 
-//#define OLED_USE_SPI
+#define OLED_USE_SPI
 
 #ifdef OLED_USE_SPI
 xil_spi *oled_SPI;
