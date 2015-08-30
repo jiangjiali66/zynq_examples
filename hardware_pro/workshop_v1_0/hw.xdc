@@ -81,7 +81,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports {echo[1]}]
 set_property PACKAGE_PIN V20 [get_ports {echo[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {echo[2]}]
 
-#Gpio2_0    JC  Motor
+#Gpio2_0    JC  
 set_property PACKAGE_PIN V15 [get_ports {gpio2_0_tri_io[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio2_0_tri_io[0]}]
 set_property PACKAGE_PIN W15 [get_ports {gpio2_0_tri_io[1]}]
@@ -91,7 +91,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpio2_0_tri_io[2]}]
 set_property PACKAGE_PIN Y14 [get_ports {gpio2_0_tri_io[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio2_0_tri_io[3]}]
 
-#Gpio2_1    JD  OPT
+#Gpio2_1    JD  
 set_property PACKAGE_PIN T14 [get_ports {gpio2_1_tri_io[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio2_1_tri_io[0]}]
 set_property PACKAGE_PIN T15 [get_ports {gpio2_1_tri_io[1]}]
@@ -116,14 +116,21 @@ set_property PACKAGE_PIN T12 [get_ports M_right_phB]
 set_property IOSTANDARD LVCMOS33 [get_ports M_right_phB]
 
 #ADC
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux14_v_p]
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux14_v_n]
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux7_v_p]
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux7_v_n]
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux15_v_p]
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux15_v_n]
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux6_v_p]
-set_property PACKAGE_PIN J14 [get_ports Vaux6_v_n]
-set_property IOSTANDARD LVCMOS33 [get_ports Vaux6_v_n]
+set_property PACKAGE_PIN N15 [get_ports {Vaux14_v_p}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux14_v_p}]
+set_property PACKAGE_PIN N16 [get_ports {Vaux14_v_n}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux14_v_n}]
+set_property PACKAGE_PIN L14 [get_ports {Vaux7_v_p}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux7_v_p}]
+set_property PACKAGE_PIN L15 [get_ports {Vaux7_v_n}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux7_v_n}]
+set_property PACKAGE_PIN K16 [get_ports {Vaux15_v_p}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux15_v_p}]
+set_property PACKAGE_PIN J16 [get_ports {Vaux15_v_n}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux15_v_n}]
+set_property PACKAGE_PIN K14 [get_ports {Vaux6_v_p}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux6_v_p}]
+set_property PACKAGE_PIN J14 [get_ports {Vaux6_v_n}]
+set_property IOSTANDARD LVCMOS33 [get_ports {Vaux6_v_n}]
 
 
