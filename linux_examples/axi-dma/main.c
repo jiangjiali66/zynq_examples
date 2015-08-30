@@ -19,7 +19,7 @@
 #include "xil_dma.h"
 #include<sys/time.h>
 #define DEVICE_NAME "/dev/xdma"
-#define DMA_CH 0
+#define DMA_CH 1
 
 int main()
 {

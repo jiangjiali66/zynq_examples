@@ -19,6 +19,9 @@
 #include "xil_mmult.h"
 #include <stdio.h>
 #include "xil_dma.h"
+
+#define MMULT_BASE_ADDR 0x43c40000
+
 void matrix_multiply_ref(float a[DIM][DIM], float b[DIM][DIM], float out[DIM][DIM])
 {
 
@@ -46,7 +49,7 @@ int main()
     float sw_A[DIM][DIM];
     float sw_B[DIM][DIM];
     float sw_res[DIM][DIM];
-    xil_mmult *mmult = XilMmultCreate(0x43c20000, "/dev/xdma", 1);
+    xil_mmult *mmult = XilMmultCreate(MMULT_BASE_ADDR, "/dev/xdma", 0);
     hw_A = (float *)mmult->setupAlloc(mmult, DIM * DIM, sizeof(float));
     hw_B = (float *)mmult->setupAlloc(mmult, DIM * DIM, sizeof(float));
     hw_res = (float *)mmult->setupAlloc(mmult, DIM * DIM, sizeof(float));

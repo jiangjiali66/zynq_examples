@@ -81,11 +81,17 @@ int main()
     memset(tx_buf, 0x12, WRITE_BYTE_NUM/2);
     memset(tx_buf + WRITE_BYTE_NUM/2, 0x34, WRITE_BYTE_NUM/2);
     int status;
-    
+    printf("written data:\n");
+    for(i = 0; i < WRITE_BYTE_NUM; i++)
+    {
+        printf("%.2x ", tx_buf[i]);
+    }
+    printf("\n");    
     eepromWrite(eeprom, i2c_addr, tx_buf, WRITE_BYTE_NUM);
     
     eepromRead(eeprom, i2c_addr, rx_buf, WRITE_BYTE_NUM);
     
+    printf("read data:\n"); 
     for(i = 0; i < WRITE_BYTE_NUM; i++)
     {
         printf("%.2x ", rx_buf[i]);

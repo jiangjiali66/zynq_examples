@@ -49,7 +49,6 @@ int main()
     XilGpioDestroy(my_gpio);
 
 /*****以下是对psgpio进行操作，MIO7在zybo被接在了一个led上******/
-
     xil_gpio *my_ps_gpio = XilGpioCreate(PS_GPIO_BASEADDR);
 
     my_ps_gpio->modeWrite(my_ps_gpio, 0, LD4, XIL_OUTPUT);
@@ -61,6 +60,5 @@ int main()
         usleep(200000);
     }
     XilGpioDestroy(my_ps_gpio);
-    
     return 0;
 }

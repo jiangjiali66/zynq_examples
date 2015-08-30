@@ -1,0 +1,22 @@
+
+****** Vivado v2014.2 (64-bit)
+  **** SW Build 932637 on Wed Jun 11 13:33:10 MDT 2014
+  **** IP Build 924643 on Fri May 30 09:20:16 MDT 2014
+    ** Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
+
+source run_ippack.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'c:/Xilinx/Vivado/2014.2/data/ip'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'c:/Xilinx/Vivado/2014.2/data/ip'.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'mmult_accel_core_ap_fadd_3_full_dsp'...
+WARNING: [IP_Flow 19-1687] The current project language is set to Verilog. However IP 'mmult_accel_core_ap_fadd_3_full_dsp' does not support 'Verilog Synthesis' output products, delivering 'VHDL Synthesis' output products instead.
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'mmult_accel_core_ap_fadd_3_full_dsp'...
+WARNING: [IP_Flow 19-1687] The current project language is set to Verilog. However IP 'mmult_accel_core_ap_fadd_3_full_dsp' does not support 'Verilog Simulation' output products, delivering 'VHDL Simulation' output products instead.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'mmult_accel_core_ap_fmul_2_max_dsp'...
+WARNING: [IP_Flow 19-1687] The current project language is set to Verilog. However IP 'mmult_accel_core_ap_fmul_2_max_dsp' does not support 'Verilog Synthesis' output products, delivering 'VHDL Synthesis' output products instead.
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'mmult_accel_core_ap_fmul_2_max_dsp'...
+WARNING: [IP_Flow 19-1687] The current project language is set to Verilog. However IP 'mmult_accel_core_ap_fmul_2_max_dsp' does not support 'Verilog Simulation' output products, delivering 'VHDL Simulation' output products instead.
+INFO: [Common 17-206] Exiting Vivado at Thu Jul 02 15:49:16 2015...

@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-#define IIO_XADC_PATH       "/sys/bus/iio/devices/iio:device1/%s"
+#define IIO_XADC_PATH       "/sys/bus/iio/devices/iio:device0/%s"
 #define XSM_SEQ_CH_AUX06    "in_voltage8_raw"
 #define XSM_SEQ_CH_AUX07    "in_voltage9_raw"
 #define XSM_SEQ_CH_AUX14   "in_voltage10_raw"

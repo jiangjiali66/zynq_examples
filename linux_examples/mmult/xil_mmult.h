@@ -23,6 +23,9 @@
 #include "xil_types.h"
 
 #define DIM 16
+#define WAIT 1
+#define NO_WAIT 0
+
 
 typedef struct _xil_mmult xil_mmult;
 

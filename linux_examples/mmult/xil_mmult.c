@@ -126,7 +126,7 @@ static int XilMmultRun(xil_mmult * const me, float in_a[DIM][DIM], float in_b[DI
 {
     if (0 < me->dma->getDevNum(me->dma)) 
     {
-        if(me->dma->performTransfer(me->dma, me->DMAChannel, 1, 
+        if(me->dma->performTransfer(me->dma, me->DMAChannel, WAIT, 
 				(uint32_t *)in_a, DIM * DIM, 
 				XDMA_MEM_TO_DEV) != 0)
         {
@@ -135,7 +135,7 @@ static int XilMmultRun(xil_mmult * const me, float in_a[DIM][DIM], float in_b[DI
     }
     if (0 < me->dma->getDevNum(me->dma))
     {
-        if(me->dma->performTransfer(me->dma, me->DMAChannel, 1, 
+        if(me->dma->performTransfer(me->dma, me->DMAChannel, WAIT, 
 				(uint32_t *)in_b, DIM * DIM, 
 				XDMA_MEM_TO_DEV) != 0)
         {
@@ -144,7 +144,7 @@ static int XilMmultRun(xil_mmult * const me, float in_a[DIM][DIM], float in_b[DI
     }
     if (0 < me->dma->getDevNum(me->dma))
     {
-        if(me->dma->performTransfer(me->dma, me->DMAChannel, 1, 
+        if(me->dma->performTransfer(me->dma, me->DMAChannel, WAIT, 
 				(uint32_t *)res, DIM * DIM, 
 				XDMA_DEV_TO_MEM) != 0)
         {

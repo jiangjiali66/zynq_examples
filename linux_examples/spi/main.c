@@ -41,18 +41,21 @@ int main()
                 0xF0, 0x0D,
     };
     uint8_t rx[sizeof(tx)] = {0};
+
+    printf("spi test tx buf:\n");
     for(i=0;i<sizeof(tx);i++)
     {
         printf("%.2x ", tx[i]);
     }
     printf("\n");
+    printf("RWNbyte test rx buf:\n");
     myspi->RWNbyte(myspi, tx, rx, sizeof(tx), 0);
     for(i=0;i<sizeof(tx);i++)
     {
         printf("%.2x ", rx[i]);
     }
     printf("\n");
-
+    printf("RWOneByte test rx buf:\n");
     for(i=0;i<sizeof(tx);i++)
     {
         printf("%.2x ", myspi->RWOneByte(myspi, tx[i], 0));
