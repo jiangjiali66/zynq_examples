@@ -29,39 +29,14 @@ uboot下载地址：<code>https://github.com/Xilinx/u-boot-xlnx/tree/xilinx-v201
 example的目录结构为</br>
 <pre>
 .
+├── devicetree
+│   ├── devicetree.dtb
+│   ├── pl.dtsi
+│   ├── skeleton.dtsi
+│   ├── system.dts
+│   └── zynq-7000.dtsi
 ├── hardware_pro
-│   ├── axi_pwm_6ch_1.0
-│   │   ├── bd
-│   │   │   └── bd.tcl
-│   │   ├── component.xml
-│   │   ├── drivers
-│   │   │   └── axi_pwm_6ch_v1_0
-│   │   │       ├── data
-│   │   │       │   ├── axi_pwm_6ch.mdd
-│   │   │       │   └── axi_pwm_6ch.tcl
-│   │   │       └── src
-│   │   │           ├── axi_pwm_6ch.c
-│   │   │           ├── axi_pwm_6ch.h
-│   │   │           ├── axi_pwm_6ch_selftest.c
-│   │   │           └── Makefile
-│   │   ├── example_designs
-│   │   │   ├── bfm_design
-│   │   │   │   ├── axi_pwm_6ch_v1_0_tb.v
-│   │   │   │   └── design.tcl
-│   │   │   └── debug_hw_design
-│   │   │       ├── axi_pwm_6ch_v1_0_hw_test.tcl
-│   │   │       └── design.tcl
-│   │   ├── hdl
-│   │   │   ├── axi_pwm_6ch_v1_0_S00_AXI.v
-│   │   │   └── axi_pwm_6ch_v1_0.v
-│   │   └── xgui
-│   │       └── axi_pwm_6ch_v1_0.tcl
-│   ├── hw.xdc
-│   ├── system_pro.tcl
-│   ├── system.tcl
-│   ├── system_wrapper.v
-│   ├── zybo_ps7.tcl
-│   └── ZYBO_zynq_def.xml
+│   └── workshop_v1_0
 ├── linux_dev
 │   └── xdma
 │       ├── Makefile
@@ -70,7 +45,8 @@ example的目录结构为</br>
 ├── linux_examples
 │   ├── axi-dma
 │   │   ├── main.c
-│   │   └── Makefile
+│   │   ├── Makefile
+│   │   └── drivers-session4-dma-4public.pdf
 │   ├── devmem
 │   │   ├── devmem.c
 │   │   └── Makefile
@@ -80,9 +56,19 @@ example的目录结构为</br>
 │   ├── i2c
 │   │   ├── eeprom.c
 │   │   └── Makefile
-│   ├── oled
+│   ├── iio_xadc
 │   │   ├── main.c
 │   │   └── Makefile
+│   ├── mmult
+│   │   ├── main.c
+│   │   ├── Makefile
+│   │   ├── xil_mmult.c
+│   │   └── xil_mmult.h
+│   ├── oled
+│   │   ├── main.c
+│   │   ├── Makefile
+│   │   ├── xil_oled.c
+│   │   └── xil_oled.h
 │   ├── pwm
 │   │   ├── main.c
 │   │   └── Makefile
@@ -118,9 +104,8 @@ example的目录结构为</br>
 │   ├── u-boot.elf
 │   └── uImage
 ├── makeallclean.sh
-└── README.md
-
-25 directories, 65 files
+├── README.md
+└── ZYBO_RM_B_V6.pdf
 </pre>
 <h5>
 hardware_pro：硬件工程的TCL</br>
