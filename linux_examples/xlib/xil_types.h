@@ -29,14 +29,17 @@
 #endif
 
 #ifndef __uint32_t_defined
+#define __uint32_t_defined
 typedef unsigned long uint32_t;
 #endif
 
 #ifndef __uint16_t_defined
+#define __uint16_t_defined
 typedef unsigned short uint16_t;
 #endif
 
 #ifndef __uint8_t_defined
+#define __uint8_t_defined
 typedef unsigned char uint8_t;
 #endif
 
