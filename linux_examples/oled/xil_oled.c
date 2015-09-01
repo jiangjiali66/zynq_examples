@@ -255,14 +255,14 @@ void LEDPIN_Init(void)    //初始化引脚口，请在OLED进行修改你所对
     oled_SPI = XilSPICreate(config);
 #else
     oled_gpio = XilGpioCreate(AXI_GPIO_BASEADDR);
-    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, XIL_OUTPUT);
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, 1);
-    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, XIL_OUTPUT);
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, 1);
-    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, XIL_OUTPUT);
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, 1);
-    oled_gpio->modeWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, XIL_OUTPUT);
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 1);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH2, OLED_DC_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_DC_PIN, 1);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH2, OLED_RST_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_RST_PIN, 1);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH2, OLED_SDA_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SDA_PIN, 1);
+    oled_gpio->modeWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, XIL_OUTPUT);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, 1);
 #endif
 }
 
@@ -273,14 +273,14 @@ void LED_WrDat(u8 data)   //写数据函数
 	oled_SPI->RWOneByte(oled_SPI, data, 0);
 #else
     u8 i=8;
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, 1);
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_DC_PIN, 1);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, 0);
     while(i--)
     {
-        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, 
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SDA_PIN, 
                                     data & 0x80?1:0);
-        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 1);
-        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, 1);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, 0);
         data <<= 1;
     }
 #endif
@@ -293,14 +293,14 @@ void LED_WrCmd(u8 cmd) //写命令函数
     oled_SPI->RWOneByte(oled_SPI, cmd, 0);
 #else
     u8 i = 8;
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_DC_PIN, 0);
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_DC_PIN, 0);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, 0);
     while(i--)
     {
-        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SDA_PIN, 
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SDA_PIN, 
                                     cmd & 0x80?1:0);
-        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 1);
-        oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_SCL_PIN, 0);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, 1);
+        oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_SCL_PIN, 0);
         cmd <<= 1;
     }    
 #endif
@@ -528,13 +528,13 @@ void LED_Init(void)
 #ifdef OLED_USE_SPI    
     oled_gpio->digitalWrite(oled_gpio, 0, OLED_RST_PIN, 0);
 #else
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, 0);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_RST_PIN, 0);
 #endif
     usleep(80000);
 #ifdef OLED_USE_SPI    
     oled_gpio->digitalWrite(oled_gpio, 0, OLED_RST_PIN, 1);
 #else
-    oled_gpio->digitalWrite(oled_gpio, GPIO_CH1, OLED_RST_PIN, 1);
+    oled_gpio->digitalWrite(oled_gpio, GPIO_CH2, OLED_RST_PIN, 1);
 #endif
 	Set_Display_On_Off(0x00);		  // Display Off (0x00/0x01)
 	Set_Display_Clock(0x80);		  // Set Clock as 100 Frames/Sec

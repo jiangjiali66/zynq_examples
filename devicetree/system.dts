@@ -30,6 +30,10 @@
 &can0 {
 	status = "okay";
 };
+
+&can1 {
+    status = "okay";
+};
 &gem0 {
     status = "okay";
     phy-mode = "rgmii-id";
