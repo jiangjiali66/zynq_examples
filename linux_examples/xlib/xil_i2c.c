@@ -43,7 +43,7 @@ int Xil_I2C_read(xil_i2c* const me, void *addr, int addrsize, u8 *buf, int len)
   
     for(index = 1; index <= addrsize; index ++)
     {
-	  TransferBuf[i] = ((u8 *)addr)[size - i];
+        TransferBuf[index] = ((u8 *)addr)[addrsize - index];
     }
     write(me->fd, (u8 *)TransferBuf, addrsize);
     return read(me->fd, buf, len);
@@ -73,7 +73,7 @@ int Xil_I2C_write(xil_i2c* const me, void *addr, int addrsize, u8 *buf, int len)
     
     for(index = 1; index <= addrsize; index ++)
     {
-	TransferBuf[i] = ((u8 *)addr)[size - i];
+	TransferBuf[index] = ((u8 *)addr)[addrsize - index];
     }
 
     memcpy(TransferBuf + addrsize, buf, len);
